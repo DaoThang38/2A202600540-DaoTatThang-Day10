@@ -1,0 +1,66 @@
+{
+  "task": "ERR-403-AUTH là lỗi gì và cách xử lý?",
+  "route_reason": "task chứa mã lỗi không rõ (ERR-xxx) VÀ không có context | human approved → retrieval",
+  "risk_high": true,
+  "needs_tool": false,
+  "hitl_triggered": true,
+  "retrieved_chunks": [
+    {
+      "text": "=== Section 6: Liên hệ IT Helpdesk ===\nHotline: ext. 9000 (8:00 - 18:00, Thứ 2 - Thứ 6)\nEmail: helpdesk@company.internal\nJira: project IT-SUPPORT\nSlack: #it-helpdesk\nEmergency (ngoài giờ): ext. 9999\n",
+      "source": "it_helpdesk_faq.txt",
+      "score": -14.2622,
+      "metadata": {
+        "source": "it_helpdesk_faq.txt"
+      }
+    },
+    {
+      "text": "=== Section 7: Công cụ liên quan ===\nTicket system: Jira (project IT-ACCESS)\nIAM system: Okta\nAudit log: Splunk\nEmail: it-access@company.internal\n",
+      "source": "access_control_sop.txt",
+      "score": -14.4554,
+      "metadata": {
+        "source": "access_control_sop.txt"
+      }
+    },
+    {
+      "text": "IT HELPDESK FAQ — CÂU HỎI THƯỜNG GẶP\nSource: support/helpdesk-faq.md\nDepartment: IT\nEffective Date: 2026-01-20\nAccess: internal",
+      "source": "it_helpdesk_faq.txt",
+      "score": -14.4711,
+      "metadata": {
+        "source": "it_helpdesk_faq.txt"
+      }
+    }
+  ],
+  "retrieved_sources": [
+    "access_control_sop.txt",
+    "it_helpdesk_faq.txt"
+  ],
+  "policy_result": {},
+  "mcp_tools_used": [],
+  "final_answer": "Không đủ thông tin trong tài liệu nội bộ.",
+  "sources": [
+    "access_control_sop.txt",
+    "it_helpdesk_faq.txt"
+  ],
+  "confidence": 0.3,
+  "history": [
+    "[supervisor] received task: ERR-403-AUTH là lỗi gì và cách xử lý?",
+    "[supervisor] route=human_review reason=task chứa mã lỗi không rõ (ERR-xxx) VÀ không có context",
+    "[human_review] HITL triggered — awaiting human input",
+    "[retrieval_worker] called",
+    "[retrieval_worker] retrieved 3 chunks from ['access_control_sop.txt', 'it_helpdesk_faq.txt']",
+    "[synthesis_worker] called",
+    "[synthesis_worker] answer generated, confidence=0.3, sources=['access_control_sop.txt', 'it_helpdesk_faq.txt']",
+    "[graph] completed in 12692ms"
+  ],
+  "workers_called": [
+    "human_review",
+    "retrieval_worker",
+    "retrieval_worker",
+    "synthesis_worker",
+    "synthesis_worker"
+  ],
+  "supervisor_route": "retrieval_worker",
+  "latency_ms": 12692,
+  "run_id": "run_20260610_163142",
+  "question_id": "q09"
+}

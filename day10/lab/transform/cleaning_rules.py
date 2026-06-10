@@ -20,6 +20,7 @@ ALLOWED_DOC_IDS = frozenset(
         "sla_p1_2026",
         "it_helpdesk_faq",
         "hr_leave_policy",
+        "access_control_sop",
     }
 )
 
@@ -115,12 +116,6 @@ def clean_rows(
             quarantine.append({**raw, "reason": "missing_chunk_text"})
             continue
 
-        key = _norm_text(text)
-        if key in seen_text:
-            quarantine.append({**raw, "reason": "duplicate_chunk_text"})
-            continue
-        seen_text.add(key)
-
         fixed_text = text
         if apply_refund_window_fix and doc_id == "policy_refund_v4":
             if "14 ngày làm việc" in fixed_text:
@@ -129,6 +124,33 @@ def clean_rows(
                     "7 ngày làm việc",
                 )
                 fixed_text += " [cleaned: stale_refund_window]"
+
+        # NEW RULE 1: Fix stale HR policy (10 -> 12 ngày)
+        if doc_id == "hr_leave_policy" and "10 ngày phép năm" in fixed_text:
+            fixed_text = fixed_text.replace("10 ngày phép năm", "12 ngày phép năm")
+            fixed_text += " [cleaned: stale_hr_10d_to_12d]"
+
+        # NEW RULE 2: Remove noise strings
+        if "Nội dung không rõ ràng: " in fixed_text:
+            fixed_text = fixed_text.replace("Nội dung không rõ ràng: ", "").strip()
+        if fixed_text.startswith("!!!"):
+            fixed_text = fixed_text.replace("!!!", "").strip()
+
+        # NEW RULE 3: Quarantine chunks that become too short after cleaning
+        if len(fixed_text) < 8:
+            quarantine.append({**raw, "reason": "chunk_too_short_after_clean", "cleaned_text": fixed_text})
+            continue
+
+        # NEW RULE 4: Quarantine P2 chunks wrongly placed in sla_p1_2026
+        if doc_id == "sla_p1_2026" and "Ticket P2:" in fixed_text:
+            quarantine.append({**raw, "reason": "irrelevant_p2_in_p1_doc"})
+            continue
+
+        key = _norm_text(fixed_text)
+        if key in seen_text:
+            quarantine.append({**raw, "reason": "duplicate_chunk_text"})
+            continue
+        seen_text.add(key)
 
         seq += 1
         cleaned.append(

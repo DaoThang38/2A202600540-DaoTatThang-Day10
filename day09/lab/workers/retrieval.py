@@ -36,7 +36,11 @@ def _get_embedding_fn():
     # Option A: Sentence Transformers (offline, không cần API key)
     try:
         from sentence_transformers import SentenceTransformer
-        model = SentenceTransformer("all-MiniLM-L6-v2")
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
+        model_name = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+        model = SentenceTransformer(model_name)
         def embed(text: str) -> list:
             return model.encode([text])[0].tolist()
         return embed

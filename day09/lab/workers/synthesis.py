@@ -52,13 +52,17 @@ def _call_llm(messages: list) -> str:
 
     # Option B: Gemini
     try:
+        import os
+        from dotenv import load_dotenv
+        load_dotenv()
         import google.generativeai as genai
         genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         combined = "\n".join([m["content"] for m in messages])
         response = model.generate_content(combined)
         return response.text
-    except Exception:
+    except Exception as e:
+        print(f"Gemini error: {e}")
         pass
 
     # Fallback: trả về message báo lỗi (không hallucinate)

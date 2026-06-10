@@ -112,5 +112,38 @@ def run_expectations(cleaned_rows: List[Dict[str, Any]]) -> Tuple[List[Expectati
         )
     )
 
+    # E7: không có chuỗi nhiễu prefix
+    bad_noise = [
+        r
+        for r in cleaned_rows
+        if "Nội dung không rõ ràng: " in (r.get("chunk_text") or "")
+        or (r.get("chunk_text") or "").startswith("!!!")
+    ]
+    ok7 = len(bad_noise) == 0
+    results.append(
+        ExpectationResult(
+            "no_noise_prefix",
+            ok7,
+            "halt",
+            f"violations={len(bad_noise)}",
+        )
+    )
+
+    # E8: không chứa doc_id không hợp lệ (lọt allowlist)
+    bad_invalid_doc = [
+        r
+        for r in cleaned_rows
+        if "invalid_doc" in (r.get("doc_id") or "")
+    ]
+    ok8 = len(bad_invalid_doc) == 0
+    results.append(
+        ExpectationResult(
+            "no_invalid_doc_id",
+            ok8,
+            "halt",
+            f"violations={len(bad_invalid_doc)}",
+        )
+    )
+
     halt = any(not r.passed and r.severity == "halt" for r in results)
     return results, halt

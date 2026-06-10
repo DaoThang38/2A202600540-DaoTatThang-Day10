@@ -6,3 +6,13 @@
 day08/lab/data/grading_questions.json
 day09/lab/data/grading_questions.json
 day10/lab/data/grading_questions.json
+
+# Python and virtualenvs
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Vector databases
+chroma_db/
